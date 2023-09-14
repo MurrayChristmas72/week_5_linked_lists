@@ -1,1 +1,0 @@
-Building upon and creating ideas based upon the topics learned in lecture
