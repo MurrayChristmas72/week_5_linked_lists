@@ -26,12 +26,70 @@ int main(void)
 
     // populate linked list w/ nodes w/ random values - range set by the user
     int rand_min = 0;
-    printf("Set Min Value for Random Data Set: ");
-    scanf("%d", &rand_min);
+    char *rand_min_buffer = NULL;
+    size_t rand_min_buffer_size_bytes = 0;
+	
+    do
+    {
+        printf("Please set the Minimum value for the randomized data set range?: ");
+        if (getline(&rand_min_buffer, &rand_min_buffer_size_bytes, stdin) == -1)
+        {
+            free(rand_min_buffer);
+            printf("Error: Invalid input. Closing program\n");
+            return 1;
+        }
+        if (rand_min_buffer == NULL)
+        {
+            free(rand_min_buffer);
+            printf("Error: NULL, not enough space for input. Closing program\n");
+            return 1;
+        }
+        // if we get to this point, input is valid - convert it to an int
+        if (*rand_min_buffer == '0')
+        {
+            rand_min = 0;  // if user inputs 0, that's valid. break out to avoid atoi's issue of returning 0 for both 0 input and errors
+            break;
+        }
+		rand_min = atoi(rand_min_buffer);
+    }
+    while (rand_min == 0);  // try again if user input is not an integer
 
-    int rand_max = 0;
-    printf("Set Max Value for Random Data Set: ");
-    scanf("%d", &rand_max);
+    printf("\n");
+
+	int rand_max = 0;
+    char *rand_max_buffer = NULL;
+    size_t rand_max_buffer_size_bytes = 0;
+
+    do
+    {
+        printf("Please set the Maximum value for the randomized data set range: ");
+        if (getline(&rand_max_buffer, &rand_max_buffer_size_bytes, stdin) == -1)
+        {
+            free(rand_max_buffer);
+            printf("Error: Invalid input. Closing program\n");
+            return 1;
+        }
+        if (rand_max_buffer == NULL)
+        {
+            free(rand_max_buffer);
+            printf("Error: NULL, not enough space for input. Closing program\n");
+            return 1;
+        }
+        // if we get to this point, input is valid - convert it to an int
+        if (*rand_max_buffer == '0')
+        {
+            rand_max = 0;  // if user inputs 0, that's valid. break out to avoid atoi's issue of returning 0 for both 0 input and errors
+            break;
+        }
+		rand_max = atoi(rand_max_buffer);
+    }
+    while (rand_max == 0);  // try again if user input is not an integer
+
+    if (rand_min > rand_max)
+    {
+        printf("Error: Minimum value must be smaller than the maximum value. Closing program\n");
+        return 1;
+    }
 
 
     srand(time(NULL));  // seed new random set so we can generate a random number each iteration
@@ -53,14 +111,39 @@ int main(void)
     // prompt user for an integer that we'll try and find in the linked list
     printf("\n");
     int search_for = 0;
-    printf("Search for: ");
-    scanf("%d", &search_for);
+    char *search_for_buffer = NULL;
+    size_t search_for_buffer_size_bytes = 0;
 
-    while ( (search_for < rand_min) || (search_for > rand_max) )
+    do
     {
+        repeat_if_search_for_is_not_within_random_range:
         printf("Search for: ");
-        scanf("%d", &search_for);
+        if (getline(&search_for_buffer, &search_for_buffer_size_bytes, stdin) == -1)
+        {
+            free(search_for_buffer);
+            printf("Error: Invalid input. Closing program\n");
+            return 1;
+        }
+        if (search_for_buffer == NULL)
+        {
+            free(search_for_buffer);
+            printf("Error: NULL, not enough space for input. Closing program\n");
+            return 1;
+        }
+        // if we get to this point, input is valid - convert it to an int
+        if (*search_for_buffer == '0')
+        {
+            search_for = 0;  // if user inputs 0, that's valid. break out to avoid atoi's issue of returning 0 for both 0 input and errors
+            break;
+        }
+        search_for = atoi(search_for_buffer);
+        if ( (search_for < rand_min) || (search_for > rand_max) )
+        {
+            printf("Your number is not within the random data set range. Try again.\n\n");
+            goto repeat_if_search_for_is_not_within_random_range;
+        }
     }
+    while (search_for == 0);  // try again if user input is not an integer
 
     node *trav = list;
     if ( search_linked_list(trav, search_for) )
@@ -74,7 +157,7 @@ int main(void)
         return 0;
     }
 
-
+free(search_for_buffer);
 return 0;
 }
 

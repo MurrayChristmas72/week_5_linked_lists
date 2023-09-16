@@ -41,12 +41,16 @@ int main(void)
             return 1;
         }
         // if we get to this point, input is valid - convert it to an int
+        if (*element_count_buffer == '0')
+        {
+            printf("Node pointer has been created for you. None of the values will be populated. Closing program.\n");
+            free(element_count_buffer);
+            return 0;
+        }
         element_count = atoi(element_count_buffer);
     }
-    while (element_count <= 0);  // try again if :
-                                 // user input equals 0 or less (we want the linked list to have at least 1 element)
-                                 // OR
-                                 // atoi doesn't convert the user input into an integer (returns 0)
+    while (element_count <= 0);  // try again if user input is not a positive integer
+    free(element_count_buffer);
 
     printf("\n");
 
@@ -70,8 +74,12 @@ int main(void)
             return 1;
         }
         // if we get to this point, input is valid - convert it to an int
+        if (*rand_min_buffer == '0')
+        {
+            rand_min = 0;
+            break;
+        }
 		rand_min = atoi(rand_min_buffer);
-
     }
     while (rand_min == 0);
 
@@ -97,6 +105,11 @@ int main(void)
             return 1;
         }
         // if we get to this point, input is valid - convert it to an int
+        if (*rand_max_buffer == '0')
+        {
+            rand_max = 0;
+            break;
+        }
 		rand_max = atoi(rand_max_buffer);
 
     }
@@ -106,14 +119,15 @@ int main(void)
 
     if (rand_min > rand_max)
     {
-        printf("Error: minimum value must be smaller than the maximum value. Closing program\n");
+        printf("Error: Minimum value must be smaller than the maximum value. Closing program\n");
         return 1;
     }
 
+    node * new_node = NULL;
     srand(time(NULL));  // seed new random set so we can generate a random number each iteration
     for (int i = 0; i < element_count; i++)
     {
-        node *new_node = malloc(sizeof(node));  // create new node pointer
+        new_node = malloc(sizeof(node));  // create new node pointer
         if (new_node == NULL)  // make sure space is available
         {
             return 1;
@@ -130,6 +144,8 @@ int main(void)
         new_node->next = list;
         list = new_node;  // return pointer to the front
     }
+    free(rand_min_buffer);
+    free(rand_max_buffer);
 
 
     // iterate over a linked list :
@@ -140,5 +156,6 @@ int main(void)
         ptr = ptr->next; // set the pointer to point to the next element
     }
 
+free(new_node);
 return 0;
 }
