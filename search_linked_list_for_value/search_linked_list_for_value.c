@@ -1,9 +1,11 @@
 #include <stdio.h>  // printf()
-#include <stdlib.h>  // rand() ; srandom() ; free()
+#include <stdlib.h>  // rand() ; srandom() ; free() ; strtol()
 #include <time.h>  // time()
+#include <ctype.h>  // isdigit()
 #include <stdbool.h>
 
 
+// create node data structure
 typedef struct node
 {
     int value;
@@ -11,20 +13,51 @@ typedef struct node
 }
 node;
 
-#define NODE_COUNT 7
-
 
 bool search_linked_list(node *node, int number);
 
 
 int main(void)
 {
-    // Create & populate a linked list so we can search thru it :
 
-    // create linked list
+    // create linked list pointer and set it to NULL
     node *list = NULL;
 
     // populate linked list w/ nodes w/ random values - range set by the user
+    // user input must be an integer > 0
+    int element_count = 0;
+    char *element_count_buffer = NULL;
+    size_t element_count_buffer_size_bytes = 0;
+
+    do
+    {
+        printf("How many elements would you like to have in your linked list?: ");
+        if (getline(&element_count_buffer, &element_count_buffer_size_bytes, stdin) == -1)
+        {
+            free(element_count_buffer);
+            printf("Error: Invalid input. Closing program\n");
+            return 1;
+        }
+        if (element_count_buffer == NULL)
+        {
+            free(element_count_buffer);
+            printf("Error: NULL, not enough space for input. Closing program\n");
+            return 1;
+        }
+        // if we get to this point, input is valid - convert it to an int
+        if (*element_count_buffer == '0')
+        {
+            printf("Node pointer has been created for you. None of the values will be populated. Closing program.\n");
+            free(element_count_buffer);
+            return 0;
+        }
+        element_count = atoi(element_count_buffer);
+    }
+    while (element_count <= 0);  // try again if user input is not a positive integer
+    free(element_count_buffer);
+
+    printf("\n");
+
     int rand_min = 0;
     char *rand_min_buffer = NULL;
     size_t rand_min_buffer_size_bytes = 0;
@@ -47,12 +80,12 @@ int main(void)
         // if we get to this point, input is valid - convert it to an int
         if (*rand_min_buffer == '0')
         {
-            rand_min = 0;  // if user inputs 0, that's valid. break out to avoid atoi's issue of returning 0 for both 0 input and errors
+            rand_min = 0;
             break;
         }
 		rand_min = atoi(rand_min_buffer);
     }
-    while (rand_min == 0);  // try again if user input is not an integer
+    while (rand_min == 0);
 
     printf("\n");
 
@@ -78,29 +111,38 @@ int main(void)
         // if we get to this point, input is valid - convert it to an int
         if (*rand_max_buffer == '0')
         {
-            rand_max = 0;  // if user inputs 0, that's valid. break out to avoid atoi's issue of returning 0 for both 0 input and errors
+            rand_max = 0;
             break;
         }
 		rand_max = atoi(rand_max_buffer);
+
     }
-    while (rand_max == 0);  // try again if user input is not an integer
+    while (rand_max == 0);
+
 
     if (rand_min > rand_max)
     {
-        printf("Error: Minimum value must be smaller than the maximum value. Closing program\n");
+        printf("Minimum value must be smaller than the maximum value. Closing program\n\n");
         return 1;
     }
 
-
+    node * new_node = NULL;
     srand(time(NULL));  // seed new random set so we can generate a random number each iteration
-    for (int i = 0; i < NODE_COUNT; i++)
+    for (int i = 0; i < element_count; i++)
     {
-        node *new_node = malloc(sizeof(node));  // create new node pointer
+        new_node = malloc(sizeof(node));  // create new node pointer
         if (new_node == NULL)  // make sure space is available
         {
             return 1;
         }
-        new_node->value = rand() % ((rand_max + 1) - rand_min);  // populate .value with random number within random range set by the user
+        // range finder math :
+        // find range by subtracting the max and the min. add 1 so that both values are included 
+        // (ie min == 3, max == 8. 8 - 3 == 5, but range has 6 values so add 1)
+        // rand() defaults to setting 0 as the rand_min & a user defined number as the rand_max
+        // we can get around this by running rand() with the range as the rand_max (between 0 and range - 1)
+        // then adding the rand_min at the end to shift the data set up to fit within the min & max constraints
+        int range = rand_max - rand_min + 1;
+        new_node->value = rand() % range + rand_min;  // populate .value with random number within random range set by the user
         new_node->next = NULL;  // populate .next NULL to remove garbage value
         new_node->next = list;
         list = new_node;  // return pointer to the front
@@ -144,16 +186,19 @@ int main(void)
         }
     }
     while (search_for == 0);  // try again if user input is not an integer
+    free(rand_min_buffer);
+    free(rand_max_buffer);
+
 
     node *trav = list;
     if ( search_linked_list(trav, search_for) )
     {
-        printf("Success: Your number appears in the linked list\n");
+        printf("Success: Your number appears in the linked list\n\n");
         return 0;
     }
     else
     {
-        printf("Failure: Your number does not appear in the linked list\n");
+        printf("Failure: Your number does not appear in the linked list\n\n");
         return 0;
     }
 

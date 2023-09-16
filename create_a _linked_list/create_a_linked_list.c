@@ -119,7 +119,7 @@ int main(void)
 
     if (rand_min > rand_max)
     {
-        printf("Error: Minimum value must be smaller than the maximum value. Closing program\n");
+        printf("Minimum value must be smaller than the maximum value. Closing program\n\n");
         return 1;
     }
 
