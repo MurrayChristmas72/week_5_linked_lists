@@ -1,7 +1,13 @@
 {
     "folders": [
         {
-            "path": "."
+            "path": ".git"
+        },
+        {
+            "path": ".vscode"
+        },
+        {
+            "path": "singly_linked_lists"
         }
     ]
 }
