@@ -1,5 +1,7 @@
 Building upon and creating ideas based upon the topics learned in lecture :
 
+These programs work on singly-linked lists
+
 --
 
 create_a_linked_list.c :
