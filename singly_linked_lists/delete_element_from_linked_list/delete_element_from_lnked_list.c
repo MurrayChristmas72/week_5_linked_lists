@@ -15,6 +15,7 @@ node;
 
 
 node* delete_element_from_linked_list(node *list, int number);
+void delete_linked_list(node *node);
 
 
 int main(void)
@@ -206,6 +207,16 @@ int main(void)
 
     delete_element_from_linked_list(list, search_for);
 
+
+    /*
+    * after program is run
+    * free memory
+    */
+
+   delete_linked_list(list);
+    
+list = NULL;
+new_node = NULL;
 return 0;
 }
 
@@ -259,4 +270,24 @@ node* delete_element_from_linked_list(node *list, int number)
         }
     }
     return list;
+}
+
+
+void delete_linked_list(node *node)
+{
+// starts with separate traversal pointer pointing to the beginning of the linked list
+    // Base Case :
+    // if you reach a null pointer, stop
+    if (node == NULL)
+    {
+        return;
+    }
+
+    // Recursive Case :
+    // delete the rest of the list
+    delete_linked_list(node->next);
+
+    // free the current node
+    free(node);
+    node = NULL;
 }
