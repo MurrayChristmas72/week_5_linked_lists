@@ -138,10 +138,10 @@ int main(void)
         return 1;
     }
 
-    node * new_node = NULL;
     srand(time(NULL));  // seed new random set so we can generate a random number each iteration
     for (int i = 0; i < element_count; i++)
     {
+        node * new_node = NULL;
         new_node = malloc(sizeof(node));  // create new node pointer
         if (new_node == NULL)  // make sure space is available
         {
@@ -162,28 +162,31 @@ int main(void)
 
 
     delete_linked_list(list);
-    
-list = NULL;
-new_node = NULL;
+    list = NULL;
+
+
 return 0;
 }
 
 
-void delete_linked_list(node *node)
+
+
+
+void delete_linked_list(node *lead_node)
 {
 // starts with separate traversal pointer pointing to the beginning of the linked list
     // Base Case :
     // if you reach a null pointer, stop
-    if (node == NULL)
+    if (lead_node == NULL)
     {
         return;
     }
 
     // Recursive Case :
     // delete the rest of the list
-    delete_linked_list(node->next);
+    delete_linked_list(lead_node->next);
 
     // free the current node
-    free(node);
-    node = NULL;
+    free(lead_node);
+    lead_node = NULL;
 }

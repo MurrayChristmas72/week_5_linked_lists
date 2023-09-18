@@ -14,7 +14,8 @@ typedef struct node
 node;
 
 
-bool search_linked_list(node *node, int number);
+bool search_linked_list(node *lead_node, int number);
+void delete_linked_list(node *lead_node);
 
 
 int main(void)
@@ -35,26 +36,30 @@ int main(void)
         if (getline(&element_count_buffer, &element_count_buffer_size_bytes, stdin) == -1)
         {
             free(element_count_buffer);
+            element_count_buffer = NULL;
             printf("Error: Invalid input. Closing program\n");
             return 1;
         }
         if (element_count_buffer == NULL)
         {
             free(element_count_buffer);
+            element_count_buffer = NULL;
             printf("Error: NULL, not enough space for input. Closing program\n");
             return 1;
         }
         // if we get to this point, input is valid - convert it to an int
         if (*element_count_buffer == '0')
         {
-            printf("Node pointer has been created for you. None of the values will be populated. Closing program.\n");
             free(element_count_buffer);
+            element_count_buffer = NULL;
+            printf("Node pointer has been created for you. None of the values will be populated. Closing program.\n");
             return 0;
         }
         element_count = atoi(element_count_buffer);
     }
     while (element_count <= 0);  // try again if user input is not a positive integer
     free(element_count_buffer);
+    element_count_buffer = NULL;
 
     printf("\n");
 
@@ -68,12 +73,14 @@ int main(void)
         if (getline(&rand_min_buffer, &rand_min_buffer_size_bytes, stdin) == -1)
         {
             free(rand_min_buffer);
+            rand_min_buffer = NULL;
             printf("Error: Invalid input. Closing program\n");
             return 1;
         }
         if (rand_min_buffer == NULL)
         {
             free(rand_min_buffer);
+            rand_min_buffer = NULL;
             printf("Error: NULL, not enough space for input. Closing program\n");
             return 1;
         }
@@ -86,6 +93,8 @@ int main(void)
 		rand_min = atoi(rand_min_buffer);
     }
     while (rand_min == 0);
+    free(rand_min_buffer);
+    rand_min_buffer = NULL;
 
     printf("\n");
 
@@ -99,12 +108,14 @@ int main(void)
         if (getline(&rand_max_buffer, &rand_max_buffer_size_bytes, stdin) == -1)
         {
             free(rand_max_buffer);
+            rand_max_buffer = NULL;
             printf("Error: Invalid input. Closing program\n");
             return 1;
         }
         if (rand_max_buffer == NULL)
         {
             free(rand_max_buffer);
+            rand_max_buffer = NULL;
             printf("Error: NULL, not enough space for input. Closing program\n");
             return 1;
         }
@@ -118,6 +129,8 @@ int main(void)
 
     }
     while (rand_max == 0);
+    free(rand_max_buffer);
+    rand_max_buffer = NULL;
 
 
     if (rand_min > rand_max)
@@ -126,10 +139,10 @@ int main(void)
         return 1;
     }
 
-    node * new_node = NULL;
     srand(time(NULL));  // seed new random set so we can generate a random number each iteration
     for (int i = 0; i < element_count; i++)
     {
+        node * new_node = NULL;
         new_node = malloc(sizeof(node));  // create new node pointer
         if (new_node == NULL)  // make sure space is available
         {
@@ -163,12 +176,14 @@ int main(void)
         if (getline(&search_for_buffer, &search_for_buffer_size_bytes, stdin) == -1)
         {
             free(search_for_buffer);
+            search_for_buffer = NULL;
             printf("Error: Invalid input. Closing program\n");
             return 1;
         }
         if (search_for_buffer == NULL)
         {
             free(search_for_buffer);
+            search_for_buffer = NULL;
             printf("Error: NULL, not enough space for input. Closing program\n");
             return 1;
         }
@@ -186,36 +201,58 @@ int main(void)
         }
     }
     while (search_for == 0);  // try again if user input is not an integer
-    free(rand_min_buffer);
-    free(rand_max_buffer);
+    free(search_for_buffer);
+    search_for_buffer = NULL;
 
 
-    node *trav = list;
-    if ( search_linked_list(trav, search_for) )
+    if ( search_linked_list(list, search_for) == true )
     {
         printf("Success: Your number appears in the linked list\n\n");
-        return 0;
     }
     else
     {
         printf("Failure: Your number does not appear in the linked list\n\n");
-        return 0;
     }
 
-free(search_for_buffer);
+    delete_linked_list(list);
+    list = NULL;
+
 return 0;
 }
 
 
-bool search_linked_list(node *node, int number)
+
+
+
+bool search_linked_list(node *lead_node, int number)
 {
-    while (node != NULL)
+    while (lead_node != NULL)
     {
-        if (node->value == number)
+        if (lead_node->value == number)
         {
             return true;
         }
-        node = node->next;
+        lead_node = lead_node->next;
     }
     return false;
+}
+
+
+void delete_linked_list(node *lead_node)
+{
+// starts with separate traversal pointer pointing to the beginning of the linked list
+    // Base Case :
+    // if you reach a null pointer, stop
+    if (lead_node == NULL)
+    {
+        return;
+    }
+
+    // Recursive Case :
+    // delete the rest of the list
+    delete_linked_list(lead_node->next);
+
+    // free the current node
+    free(lead_node);
+    lead_node = NULL;
 }

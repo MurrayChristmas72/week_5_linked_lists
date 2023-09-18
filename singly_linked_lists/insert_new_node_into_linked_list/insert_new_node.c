@@ -14,7 +14,7 @@ typedef struct node
 node;
 
 
-node* delete_element_from_linked_list(node *lead_node, int number);
+node* insert_node(node * lead_node, int insert);
 void delete_linked_list(node *lead_node);
 
 
@@ -132,6 +132,7 @@ int main(void)
     free(rand_max_buffer);
     rand_max_buffer = NULL;
 
+    printf("\n");
 
     if (rand_min > rand_max)
     {
@@ -165,110 +166,70 @@ int main(void)
 
     // Search thru linked list for an integer :
     // prompt user for an integer that we'll try and find in the linked list
-    printf("\n");
-    int search_for = 0;
-    char *search_for_buffer = NULL;
-    size_t search_for_buffer_size_bytes = 0;
+    int insert = 0;
+    char *insert_buffer = NULL;
+    size_t insert_buffer_size_bytes = 0;
 
     do
     {
-        repeat_if_search_for_is_not_within_random_range:
-        printf("Search for: ");
-        if (getline(&search_for_buffer, &search_for_buffer_size_bytes, stdin) == -1)
+        printf("Enter the value you'd like to insert: ");
+        if (getline(&insert_buffer, &insert_buffer_size_bytes, stdin) == -1)
         {
-            free(search_for_buffer);
-            search_for_buffer = NULL;
+            free(insert_buffer);
+            insert_buffer = NULL;
             printf("Error: Invalid input. Closing program\n");
             return 1;
         }
-        if (search_for_buffer == NULL)
+        if (insert_buffer == NULL)
         {
-            free(search_for_buffer);
-            search_for_buffer = NULL;
+            free(insert_buffer);
+            insert_buffer = NULL;
             printf("Error: NULL, not enough space for input. Closing program\n");
             return 1;
         }
         // if we get to this point, input is valid - convert it to an int
-        if (*search_for_buffer == '0')
+        if (*insert_buffer == '0')
         {
-            search_for = 0;  // if user inputs 0, that's valid. break out to avoid atoi's issue of returning 0 for both 0 input and errors
+            insert = 0;  // if user inputs 0, that's valid. break out to avoid atoi's issue of returning 0 for both 0 input and errors
             break;
         }
-        search_for = atoi(search_for_buffer);
-        if ( (search_for < rand_min) || (search_for > rand_max) )
-        {
-            printf("Your number is not within the random data set range. Try again.\n\n");
-            goto repeat_if_search_for_is_not_within_random_range;
-        }
+        insert = atoi(insert_buffer);
     }
-    while (search_for == 0);  // try again if user input is not an integer
-    free(search_for_buffer);
-    search_for_buffer = NULL;
+    while (insert == 0);  // try again if user input is not an integer
+    free(insert_buffer);
+    insert_buffer = NULL;
 
 
-    delete_element_from_linked_list(list, search_for);
-
+    list = insert_node(list, insert);
 
     /*
-    * after program is run
-    * free memory
-    */
+     * after program is run
+     * free memory
+     */
 
     delete_linked_list(list);
     list = NULL;
+
 
 return 0;
 }
 
 
-node* delete_element_from_linked_list(node *lead_node, int number)
+
+
+
+node* insert_node(node * lead_node, int insert)
 {
-    bool in_list = false;
-
-    node *trav = NULL;
-    trav = lead_node;
-    node *tail = NULL;
-    tail = lead_node;
-
-    // trav finds the desired element (where .value == number)
-    // tail finds the element before trav
-    // so that tail.next can point to trav.next; so when trav is free'd, the link chain remain intact
-
-    while (trav != NULL)
+    node *new_node = NULL;
+    new_node = malloc(sizeof(node));  // create new node pointer
+    if (new_node == NULL)  // make sure space is available
     {
-        if (trav->value == number)
-        {
-            in_list = true;
-            while (tail != NULL)
-            {
-                if (tail == trav)  // if number is found at the 1st element
-                {
-                    tail = trav->next;
-                    free(trav);
-                    trav = NULL;
-                    trav = tail;
-                    lead_node = trav;
-                    break;
-                }
-                else if (tail->next == trav)  // if number is found anywhere after the 1st element
-                {
-                    tail->next = trav->next;
-                    free(trav);
-                    trav = NULL;
-                    trav = tail->next;
-                    break;
-                }
-                else  // if number is found at the current element
-                {
-                    tail = tail->next;
-                }
-            }
-        }
-        else
-        {
-            trav = trav->next;
-        }
+        return NULL;
     }
+    new_node->value = insert;
+    new_node->next = NULL;
+    new_node->next = lead_node;
+    lead_node = new_node;
     return lead_node;
 }
 
