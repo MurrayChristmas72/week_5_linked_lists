@@ -35,12 +35,14 @@ int main(void)
         if (getline(&element_count_buffer, &element_count_buffer_size_bytes, stdin) == -1)
         {
             free(element_count_buffer);
+            element_count_buffer = NULL;
             printf("Error: Invalid input. Closing program\n");
             return 1;
         }
         if (element_count_buffer == NULL)
         {
             free(element_count_buffer);
+            element_count_buffer = NULL;
             printf("Error: NULL, not enough space for input. Closing program\n");
             return 1;
         }
@@ -49,12 +51,14 @@ int main(void)
         {
             printf("Node pointer has been created for you. None of the values will be populated. Closing program.\n");
             free(element_count_buffer);
+            element_count_buffer = NULL;
             return 0;
         }
         element_count = atoi(element_count_buffer);
     }
     while (element_count <= 0);  // try again if user input is not a positive integer
     free(element_count_buffer);
+    element_count_buffer = NULL;
 
     printf("\n");
 
@@ -68,12 +72,14 @@ int main(void)
         if (getline(&rand_min_buffer, &rand_min_buffer_size_bytes, stdin) == -1)
         {
             free(rand_min_buffer);
+            rand_min_buffer = NULL;
             printf("Error: Invalid input. Closing program\n");
             return 1;
         }
         if (rand_min_buffer == NULL)
         {
             free(rand_min_buffer);
+            rand_min_buffer = NULL;
             printf("Error: NULL, not enough space for input. Closing program\n");
             return 1;
         }
@@ -87,6 +93,7 @@ int main(void)
     }
     while (rand_min == 0);
     free(rand_min_buffer);
+    rand_min_buffer = NULL;
 
     printf("\n");
 
@@ -100,12 +107,14 @@ int main(void)
         if (getline(&rand_max_buffer, &rand_max_buffer_size_bytes, stdin) == -1)
         {
             free(rand_max_buffer);
+            rand_max_buffer = NULL;
             printf("Error: Invalid input. Closing program\n");
             return 1;
         }
         if (rand_max_buffer == NULL)
         {
             free(rand_max_buffer);
+            rand_max_buffer = NULL;
             printf("Error: NULL, not enough space for input. Closing program\n");
             return 1;
         }
@@ -120,6 +129,7 @@ int main(void)
     }
     while (rand_max == 0);
     free(rand_max_buffer);
+    rand_max_buffer = NULL;
 
 
     if (rand_min > rand_max)
@@ -165,12 +175,14 @@ int main(void)
         if (getline(&search_for_buffer, &search_for_buffer_size_bytes, stdin) == -1)
         {
             free(search_for_buffer);
+            search_for_buffer = NULL;
             printf("Error: Invalid input. Closing program\n");
             return 1;
         }
         if (search_for_buffer == NULL)
         {
             free(search_for_buffer);
+            search_for_buffer = NULL;
             printf("Error: NULL, not enough space for input. Closing program\n");
             return 1;
         }
@@ -189,6 +201,7 @@ int main(void)
     }
     while (search_for == 0);  // try again if user input is not an integer
     free(search_for_buffer);
+    search_for_buffer = NULL;
 
 
     delete_element_from_linked_list(list, search_for);
@@ -221,6 +234,7 @@ node* delete_element_from_linked_list(node *list, int number)
                 {
                     tail = trav->next;
                     free(trav);
+                    trav = NULL;
                     trav = tail;
                     list = trav;
                     break;
@@ -229,6 +243,7 @@ node* delete_element_from_linked_list(node *list, int number)
                 {
                     tail->next = trav->next;
                     free(trav);
+                    trav = NULL;
                     trav = tail->next;
                     break;
                 }
