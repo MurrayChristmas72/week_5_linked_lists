@@ -156,7 +156,6 @@ int main(void)
         // then adding the rand_min at the end to shift the data set up to fit within the min & max constraints
         int range = rand_max - rand_min + 1;
         new_node->value = rand() % range + rand_min;  // populate .value with random number within random range set by the user
-        new_node->next = NULL;  // populate .next NULL to remove garbage value
         new_node->next = list;
         list = new_node;  // return pointer to the front
     }

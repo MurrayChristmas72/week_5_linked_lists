@@ -227,7 +227,6 @@ node* insert_node(node * lead_node, int insert)
         return NULL;
     }
     new_node->value = insert;
-    new_node->next = NULL;
     new_node->next = lead_node;
     lead_node = new_node;
     return lead_node;
